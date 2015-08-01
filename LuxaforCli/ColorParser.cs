@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using LuxaforSharp;
 
 namespace LuxaforCli
 {
@@ -7,7 +8,7 @@ namespace LuxaforCli
     {
         private string input;
 
-        public Color color { get; private set; }
+        public LuxaforSharp.Color color { get; private set; }
 
         public string error { get; private set; }
 
@@ -15,41 +16,28 @@ namespace LuxaforCli
         {
             this.input = input;
 
-            if (!this.parseByName()) 
-            {
-                this.parseByHex();
-            }
+            this.parse();
         }
 
-        private bool parseByName()
+        private static LuxaforSharp.Color SystemToLuxColor(System.Drawing.Color systemColor)
         {
-            string knownColorName = findKnownColorName(input);
-
-            if (knownColorName != null)
-            {
-                this.color = Color.FromName(knownColorName);
-                return true;
-            }
-
-            this.error = "Unknown color name : " + this.input;
-
-            return false;
+            return new LuxaforSharp.Color(systemColor.R, systemColor.G, systemColor.B);
         }
 
-        public static string findKnownColorName(string input)
+        private void parse()
         {
-            foreach (string knownColorName in Enum.GetNames(typeof(KnownColor)))
-            {
-                if (knownColorName.ToLower() == input.ToLower())
-                {
-                    return knownColorName;
-                }
-            }
+            KnownColor knownColor;
 
-            return null;
+            if (Enum.TryParse(input, true, out knownColor))
+            {
+                this.color = SystemToLuxColor(System.Drawing.Color.FromKnownColor(knownColor));
+                return;
+            }
+            
+            this.parseHexCode();    
         }
 
-        private bool parseByHex()
+        private bool parseHexCode()
         {
             string colorCode = this.input;
 
@@ -60,7 +48,7 @@ namespace LuxaforCli
 
             try
             {
-                this.color = ColorTranslator.FromHtml(colorCode);
+                this.color = SystemToLuxColor(ColorTranslator.FromHtml(colorCode));
                 return true;
             }
             catch (Exception e)

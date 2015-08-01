@@ -19,12 +19,12 @@ namespace LuxaforCli
             
             // color
             ColorParser colorParser = new ColorParser(args[0]);
-            if (colorParser.color.IsEmpty)
+            Color color = colorParser.color;
+            if (color  == null)
             {
                 Console.WriteLine(colorParser.error);                
                 return;
             }
-            Color color = new Color(colorParser.color.R, colorParser.color.G, colorParser.color.B);
 
             // device
             IDeviceList list = new DeviceList();
