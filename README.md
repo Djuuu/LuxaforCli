@@ -51,11 +51,11 @@ You can go to http://luxafor.com/ to get more information about it.
 
         LuxaforCli.exe  front dd4f00
 
-        LuxaforCli.exe  red   led1 green   led4 green
-                        ---   ----------   ----------
+        LuxaforCli.exe  red  led1 green  led4 green
+                        ---  ----------  ----------
 
-        LuxaforCli.exe  back cyan   led1 green   led2 yellow   led3 red   blink led5 blue 20 5
-                        ---------   ----------   -----------   --------   --------------------
+        LuxaforCli.exe  back cyan  led1 green  led2 yellow  led3 red  blink led5 blue 20 5
+                        ---------  ----------  -----------  --------  --------------------
     
     LED layout:
     
@@ -67,6 +67,11 @@ You can go to http://luxafor.com/ to get more information about it.
             |   |
             |   |
             +---+
+
+## Installation
+
+1. Download the latest [prebuilt release](https://github.com/Djuuu/LuxaforCli/releases/latest)
+2. Run `LuxaforCli.exe` according to [usage](https://github.com/Djuuu/LuxaforCli#usage)
 
 ## Development / build requirements
 
