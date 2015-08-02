@@ -23,6 +23,11 @@ namespace LuxaforCli
 
                 ArgumentsParser parser = new ArgumentsParser(args);
 
+                foreach (CommandDefinition cmd in parser.commands)
+                {
+                    Console.WriteLine("Command : {0}", cmd.ToString());
+                }
+
                 new Runner(device).run(parser.commands);
 
                 device.Dispose();
@@ -53,14 +58,14 @@ namespace LuxaforCli
     LuxaforCli.exe COMMAND_GROUP...
 
         COMMAND_GROUP
-            [color] [TARGET]    COLOR [SPEED]
-            blink   [TARGET]    COLOR [SPEED] [REPETITIONS]
-            wave    [WAVETYPE]  COLOR [SPEED] [REPETITIONS]
-            pattern [PATTERNID]               [REPETITIONS]
+            [color]   [TARGET]   COLOR [SPEED]
+             blink    [TARGET]   COLOR [SPEED]  [REPETITIONS]
+             wave     WAVETYPE   COLOR [SPEED]  [REPETITIONS]
+             pattern  PATTERNID                 [REPETITIONS]
 
         TARGET
             all | front | back | led1 | led2 | led3 | led4 | led5 | led6
-            default : all
+            (default : all)
 
         COLOR
             color name (red | green | blue | ...) | hexadecimal code | ""off""
@@ -84,8 +89,9 @@ namespace LuxaforCli
         LuxaforCli.exe  front dd4f00  
 
         LuxaforCli.exe  red   led1 green   led4 green
-
-        LuxaforCli.exe  led1 green   led2 yellow   led3 red   back cyan   blink led5 blue 20 5
+                        ^^^   ^^^^^^^^^^   ^^^^^^^^^^
+        LuxaforCli.exe  back cyan   led1 green   led2 yellow   led3 red   blink led5 blue 20 5
+                        ^^^^^^^^^   ^^^^^^^^^^   ^^^^^^^^^^^   ^^^^^^^^   ^^^^^^^^^^^^^^^^^^^^
 
     LED layout:
 

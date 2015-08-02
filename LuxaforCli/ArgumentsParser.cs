@@ -12,7 +12,6 @@ namespace LuxaforCli
 
         public List<CommandDefinition> commands { get; private set; }
 
-        // current items
         CommandDefinition currentCommandDefinition;
 
         bool isCurrentCommandSet = false;
@@ -22,7 +21,6 @@ namespace LuxaforCli
         bool isCurrentPatternTypeSet = false;
         bool isCurrentSpeedSet = false;
         bool isCurrentRepeatSet = false;
-
 
         public ArgumentsParser(string[] args)
         {
@@ -39,53 +37,18 @@ namespace LuxaforCli
 
             foreach (string arg in this.args)
             {
-                Console.WriteLine("arg : " + arg);
-
-                if (this.parseCommand(arg)) 
-                {
-                    continue;
-                }
-
-                if (this.parseTarget(arg))
-                {
-                    continue;
-                }
-
-                if (this.parseColor(arg))
-                {
-                    continue;
-                }
-
-                if (this.parseWaveType(arg))
-                {
-                    continue;
-                }
-
-                if (this.parsePatternType(arg))
-                {
-                    continue;
-                }
-
-                if (this.parseSpeed(arg))
-                {
-                    continue;
-                }
-
-                if (this.parseRepetitions(arg))
-                {
-                    continue;
-                }
+                if (this.parseCommand(arg))     { continue; }
+                if (this.parseTarget(arg))      { continue; }
+                if (this.parseWaveType(arg))    { continue; }
+                if (this.parseColor(arg))       { continue; }
+                if (this.parsePatternType(arg)) { continue; }
+                if (this.parseSpeed(arg))       { continue; }
+                if (this.parseRepetitions(arg)) { continue; }
             }
 
             if (this.isCurrentCommandSet)
             {
                 this.appendCurrentCommandDefinition();
-            }
-
-            //Console.WriteLine(this.commands.ToString());
-            foreach (CommandDefinition cmd in this.commands) 
-            {
-                Console.WriteLine("cmd : " + cmd.ToString());
             }
         }
 
@@ -108,7 +71,7 @@ namespace LuxaforCli
         }
 
 
-        #region checkers
+        #region Token identifiers
 
         private static bool isComandArg(string arg, out CommandType command)
         {
@@ -120,9 +83,6 @@ namespace LuxaforCli
 
         private static bool isTargetArg(string arg, out Target target)
         {
-            //return Enum.TryParse(arg, true, out target) 
-            //    && Enum.IsDefined(typeof(Target), target);
-
             Enum.TryParse(arg, true, out target);
 
             // only target names are accepted, not enum values (would conflict with other parameters)
@@ -157,16 +117,13 @@ namespace LuxaforCli
             try
             {
                 byteValue = byte.Parse(arg);
-                Console.WriteLine("byte test : {0} -> {1}", arg, byte.Parse(arg));
                 return true;
             }
             catch (Exception e)
             {
-                Console.WriteLine("byte test : {0} -> ERROR", arg);
+                byteValue = 0x00;
+                return false;
             }
-
-            byteValue = 0x00;
-            return false;
         }
 
         #endregion
@@ -185,23 +142,15 @@ namespace LuxaforCli
                 if (isComandArg(arg, out command))
                 {
                     this.currentCommandDefinition.command = command;
-
-                    Console.WriteLine("   Command found : {0}", Enum.GetName(typeof(CommandType), command));
                     return true;
                 }
-                else
-                {
-                    Console.WriteLine("   Default Command : {0}", Enum.GetName(typeof(CommandType), command));
-                    return false;
-                }
+                return false;
             }
             else
             {
                 if (isComandArg(arg, out command))
                 {
-                    Console.WriteLine("   New Command : {0}", Enum.GetName(typeof(CommandType), command));
-
-                    // previous command is over
+                    // previous command is complete
                     this.appendCurrentCommandDefinition();
 
                     // new command
@@ -217,48 +166,38 @@ namespace LuxaforCli
         {
             var target = Target.All;
 
-            switch (this.currentCommandDefinition.command)
+            if (this.currentCommandDefinition.command != CommandType.Color
+                && this.currentCommandDefinition.command != CommandType.Blink)
             {
-                // target used only for Color and Blink commands
-                case CommandType.Color:
-                case CommandType.Blink:
-                    if (!this.isCurrentTargetSet)
-                    {
-                        this.isCurrentTargetSet = true;
-
-                        if (isTargetArg(arg, out target))
-                        {
-                            Console.WriteLine("   Target found : {0}", Enum.GetName(typeof(Target), target));
-                            this.currentCommandDefinition.target = target;
-                            return true;
-                        }
-
-                        //target = Target.All;
-                        Console.WriteLine("   Default Target : {0}", Enum.GetName(typeof(Target), target));
-                        return false;
-                    }
-                    else
-                    {
-                        if (isTargetArg(arg, out target))
-                        {
-                            Console.WriteLine("   New Command target : {0}", Enum.GetName(typeof(Target), target));
-
-                            // previous command is over
-                            this.appendCurrentCommandDefinition();
-
-                            // new command
-                            this.currentCommandDefinition.target = target;
-                            this.isCurrentCommandSet = true;
-                            this.isCurrentTargetSet = true;
-                            return true;
-                        }
-                        return false;
-                    }
-                    break;
-
-                default:
-                    return false;
+                return false; // Target is only used for Color and Blink commands
             }
+
+            if (!this.isCurrentTargetSet)
+            {
+                this.isCurrentTargetSet = true;
+
+                if (isTargetArg(arg, out target))
+                {
+                    this.currentCommandDefinition.target = target;
+                    return true;
+                }
+
+                return false;
+            }
+
+            if (isTargetArg(arg, out target))
+            {
+                // previous command is complete
+                this.appendCurrentCommandDefinition();
+
+                // new command
+                this.currentCommandDefinition.target = target;
+                this.isCurrentCommandSet = true;
+                this.isCurrentTargetSet = true;
+                return true;
+            }
+
+            return false;
         }
 
         private bool parseColor(string arg)
@@ -270,25 +209,17 @@ namespace LuxaforCli
 
             if (!this.isCurrentColorSet)
             {
-                Console.WriteLine("   Color expected...");
-
                 // Color is expected
                 var color = new Color(0, 0, 0);
                 if (isColorArg(arg, out color))
                 {
-                    Console.WriteLine("   Color set : R{0} G{1} B{2}", color.Red, color.Green, color.Blue);
                     this.currentCommandDefinition.color = color;
                     this.isCurrentColorSet = true;
                     return true;
                 }
-                else
-                {
-                    // TODO : Exception ?
-                    Console.WriteLine("   {0} is not a valid color", arg);
-                    return false;
-                }
-            }
 
+                throw new Exception(String.Format("Invalid color : {0}", arg));
+            }
 
             return false;
         }
@@ -302,21 +233,17 @@ namespace LuxaforCli
 
             if (!this.isCurrentWaveTypeSet)
             {
-                Console.WriteLine("   Wave type expected...");
-
                 var waveType = WaveType.Short;
 
                 // Wave type expected
                 if (isWaveTypeArg(arg, out waveType))
                 {
-                    Console.WriteLine("   {0} is a wave type", arg);
                     this.currentCommandDefinition.waveType = waveType;
                     this.isCurrentWaveTypeSet = true;
                     return true;
                 }
 
-                // TODO : Exception ?
-                Console.WriteLine("   {0} is NOT a wave type", arg);
+                throw new Exception(String.Format("Invalid wave type : {0}", arg));
             }
 
             return false;
@@ -331,21 +258,17 @@ namespace LuxaforCli
 
             if (!this.isCurrentPatternTypeSet)
             {
-                Console.WriteLine("   Pattern type expected...");
-
                 var patternType = PatternType.Luxafor;
 
                 // Wave type expected
                 if (isPatternTypeArg(arg, out patternType))
                 {
-                    Console.WriteLine("   {0} is a pattern type", arg);
                     this.currentCommandDefinition.patternType = patternType;
                     this.isCurrentPatternTypeSet = true;
                     return true;
                 }
 
-                // TODO : Exception ?
-                Console.WriteLine("   {0} is NOT a pattern type", arg);
+                throw new Exception(String.Format("Invalid pattern type : {0}", arg));
             }
 
             return false;
@@ -360,8 +283,6 @@ namespace LuxaforCli
 
             if (!this.isCurrentSpeedSet)
             {
-                Console.WriteLine("   Speed ?");
-
                 byte speed = 0;
                 if (isByteArg(arg, out speed))
                 {
@@ -369,6 +290,8 @@ namespace LuxaforCli
                     this.isCurrentSpeedSet = true;
                     return true;
                 }
+
+                throw new Exception(String.Format("Invalid speed : {0}", arg));
             }
 
             return false;
@@ -383,8 +306,6 @@ namespace LuxaforCli
 
             if (!this.isCurrentRepeatSet)
             {
-                Console.WriteLine("   Repeat ?");
-
                 byte repeat = 0;
                 if (isByteArg(arg, out repeat))
                 {
@@ -392,6 +313,8 @@ namespace LuxaforCli
                     this.isCurrentRepeatSet = true;
                     return true;
                 }
+
+                throw new Exception(String.Format("Invalid repetitions : {0}", arg));
             }
 
             return false;

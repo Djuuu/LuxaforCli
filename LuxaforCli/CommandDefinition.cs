@@ -38,20 +38,20 @@ namespace LuxaforCli
             {
                 case CommandType.Color:
                     return String.Format(
-                        "{0} {1}  R{2} G{3} B{4}  {5}",
+                        "{0} {1} #{2}{3}{4} {5}",
                         Enum.GetName(typeof(CommandType), this.command),
                         Enum.GetName(typeof(Target), this.target),
-                        this.color.Red, this.color.Green, this.color.Blue,
+                        this.color.Red.ToString("X2"), this.color.Green.ToString("X2"), this.color.Blue.ToString("X2"),
                         this.speed
                     );
                     break;
 
                 case CommandType.Blink:
                     return String.Format(
-                        "{0} {1}  R{2} G{3} B{4}  {5} {6}",
+                        "{0} {1} #{2}{3}{4} {5} {6}",
                         Enum.GetName(typeof(CommandType), this.command),
                         Enum.GetName(typeof(Target), this.target),
-                        this.color.Red, this.color.Green, this.color.Blue,
+                        this.color.Red.ToString("X2"), this.color.Green.ToString("X2"), this.color.Blue.ToString("X2"),
                         this.speed,
                         this.repeat
                     );
@@ -59,10 +59,10 @@ namespace LuxaforCli
 
                 case CommandType.Wave:
                     return String.Format(
-                        "{0} {1}  R{2} G{3} B{4}  {5} {6}",
+                        "{0} {1} #{2}{3}{4} {5} {6}",
                         Enum.GetName(typeof(CommandType), this.command),
                         Enum.GetName(typeof(WaveType), this.waveType),
-                        this.color.Red, this.color.Green, this.color.Blue,
+                        this.color.Red.ToString("X2"), this.color.Green.ToString("X2"), this.color.Blue.ToString("X2"),                        
                         this.speed,
                         this.repeat
                     );
