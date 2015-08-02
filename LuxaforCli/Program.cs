@@ -9,22 +9,23 @@ namespace LuxaforCli
 {
     class Program
     {
+        //   _____
+        //  |6 3  |
+        //  |5 2  |
+        //  |4 1 _|
+        //  |   |
+        //  |___|
+        //
         static void Main(string[] args)
         {
-            if (args.Length != 1)
+            if (args.Length == 0)
             {
                 Console.WriteLine("LuxaforCLI needs at least 1 argument");
                 return;
             }
-            
-            // color
-            ColorParser colorParser = new ColorParser(args[0]);
-            Color color = colorParser.color;
-            if (color  == null)
-            {
-                Console.WriteLine(colorParser.error);                
-                return;
-            }
+
+            // parsing arguments
+            ArgumentsParser argParser = new ArgumentsParser(args);
 
             // device
             IDeviceList list = new DeviceList();
@@ -34,17 +35,12 @@ namespace LuxaforCli
                 Console.WriteLine("Device not found.");
                 return;
             }
-
             IDevice device = list.First();
 
+            // running commands
 
-            // device action
-            device.SetColor(LedTarget.All, color, null, 1000);
-
-
-
-            // seems needed
-            System.Threading.Thread.Sleep(25);
+            Runner runner = new Runner(device);
+            runner.run(argParser.commands);
 
             device.Dispose();
         }

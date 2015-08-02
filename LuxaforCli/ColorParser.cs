@@ -28,7 +28,7 @@ namespace LuxaforCli
         {
             KnownColor knownColor;
 
-            if (Enum.TryParse(input, true, out knownColor))
+            if (Enum.TryParse(input, true, out knownColor) && Enum.IsDefined(typeof(KnownColor), knownColor))
             {
                 this.color = SystemToLuxColor(System.Drawing.Color.FromKnownColor(knownColor));
                 return;
