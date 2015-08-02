@@ -6,67 +6,80 @@ namespace LuxaforCli
 {
     class CommandDefinition
     {
-        public CommandType type { get; private set; }
+        public CommandType command { get; set; }
 
-        public Target target { get; private set; }
+        public Target target { get; set; }
 
-        public Color color { get; private set; }
+        public Color color { get; set; }
 
-        // for wave / blink / color
-        public byte speed { get; private set; }
+        public WaveType waveType { get; set; } // for Wave
 
-        // for wave / blink
-        public byte repeat { get; private set; }
+        public PatternType patternType { get; set; } // for Pattern
 
-        // for wave
-        public WaveType waveType { get; private set; }
+        public byte speed { get; set; } // for Wave / Blink / Color
 
-        // for pattern
-        public PatternType patternType { get; private set; }
+        public byte repeat { get; set; } // for Wave / Blink / Pattern
 
-        //public CommandDefinition(Color color, CommandType type = CommandType.Color, Target target = Target.All)
-        public CommandDefinition(Color color, CommandType type, Target target)
+
+        public CommandDefinition()
         {
-            this.color = color;
-            this.type = type;
-            this.target = target;
+            this.command = CommandType.Color;
+            this.target = Target.All;
+            this.color = new Color(0, 0, 0);
+            this.speed = 0;
+            this.repeat = 0;
+            this.waveType = 0;
+            this.patternType = 0;
         }
 
         public string ToString()
         {
-            string str = "";
-
-            str += "Type : " + Enum.GetName(typeof(CommandType), this.type);
-
-            switch (type) 
+            switch (this.command)
             {
                 case CommandType.Color:
-                case CommandType.Blink:
-                    str += " ; Target : " + Enum.GetName(typeof(Target), this.target);
+                    return String.Format(
+                        "{0} {1}  R{2} G{3} B{4}  {5}",
+                        Enum.GetName(typeof(CommandType), this.command),
+                        Enum.GetName(typeof(Target), this.target),
+                        this.color.Red, this.color.Green, this.color.Blue,
+                        this.speed
+                    );
                     break;
-            }
 
-            switch (type)
-            {
-                case CommandType.Color:
                 case CommandType.Blink:
+                    return String.Format(
+                        "{0} {1}  R{2} G{3} B{4}  {5} {6}",
+                        Enum.GetName(typeof(CommandType), this.command),
+                        Enum.GetName(typeof(Target), this.target),
+                        this.color.Red, this.color.Green, this.color.Blue,
+                        this.speed,
+                        this.repeat
+                    );
+                    break;
+
                 case CommandType.Wave:
-                    str += " ; Color : R" + this.color.Red + " G" + this.color.Green + " B" + this.color.Blue;
-                    // TODO
-                    //str += " ; Speed : ";
+                    return String.Format(
+                        "{0} {1}  R{2} G{3} B{4}  {5} {6}",
+                        Enum.GetName(typeof(CommandType), this.command),
+                        Enum.GetName(typeof(WaveType), this.waveType),
+                        this.color.Red, this.color.Green, this.color.Blue,
+                        this.speed,
+                        this.repeat
+                    );
                     break;
-            }
 
-            switch (type)
-            {
-                case CommandType.Blink:
-                case CommandType.Wave:
-                    // TODO
-                    //str += " ; Repeats : ";
+                case CommandType.Pattern:
+                    return String.Format(
+                        "{0} {1} {2}",
+                        Enum.GetName(typeof(CommandType), this.command),
+                        Enum.GetName(typeof(PatternType), this.patternType),
+                        this.repeat
+                    );
                     break;
-            }
 
-            return str;
+                default:
+                    return "undefined command";
+            }
         }
     }
 }

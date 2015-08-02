@@ -44,7 +44,7 @@ namespace LuxaforCli
 
         public async Task<bool> run(CommandDefinition command)
         {
-            switch (command.type)
+            switch (command.command)
             {
                 case CommandType.Color:
                     return await device.SetColor(getDeviceTarget(command.target), command.color, command.speed);

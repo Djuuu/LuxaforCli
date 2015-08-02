@@ -19,28 +19,54 @@ You can go to http://luxafor.com/ to get more information about it.
 ## Usage
 
     LuxaforCli.exe COMMAND_GROUP...
-    
-    COMMAND_GROUP
-        [TARGET] [COMMAND] [COLOR] [SPEED] [REPETITIONS]
-    
-    TARGET
-        all | front | back | led1 | led2 | led3 | led4 | led5 | led6
-        default : all
-    
-    COMMAND
-        color | blink | wave | pattern
-        default : color
-    
-    COLOR
-        color name (red | green | blue | ...) or hexadecimal code (with or without hash character)
-        
-    SPEED
-        Integer. Only for color and blink commands.
-        
-    REPETITIONS
-        Integer. Only for wave and pattern commands.
 
-### Exemples
+        COMMAND_GROUP
+            [color] [TARGET]    COLOR [SPEED]
+            blink   [TARGET]    COLOR [SPEED] [REPETITIONS]
+            wave    [WAVETYPE]  COLOR [SPEED] [REPETITIONS]
+            pattern [PATTERNID]               [REPETITIONS]
+
+        TARGET
+            all | front | back | led1 | led2 | led3 | led4 | led5 | led6
+            default : all
+
+        COLOR
+            color name (red | green | blue | ...) | hexadecimal code | ""off""
+
+        SPEED
+            0-255
+
+        REPETITIONS
+            0-255
+
+        WAVETYPE
+            Short | Long  | OverlappingShort | OverlappingLong
+
+        PATTERNID
+            Luxafor | Police | Random1 | Random2 | Random3 | Random4 | Random5 | RainbowWave
+
+    Examples:
+
+        LuxaforCli.exe  red  
+
+        LuxaforCli.exe  front dd4f00  
+
+        LuxaforCli.exe  red   led1 green   led4 green
+
+        LuxaforCli.exe  led1 green   led2 yellow   led3 red   back cyan   blink led5 blue 20 5
+
+    LED layout:
+
+            +-------,
+            |6 3    |
+      back  |5 2    |  front
+            |4 1    |
+            |   +---'
+            |   |
+            |   |
+            +---+
+
+### Examples
 
 ```LuxaforCli.exe``` ```red```  
 Turns all leds red.
