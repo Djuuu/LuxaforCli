@@ -72,26 +72,27 @@ namespace LuxaforCli
 
         SPEED
             0-255
-
+    
         REPETITIONS
             0-255
-
+    
         WAVETYPE
-            Short | Long  | OverlappingShort | OverlappingLong
+            Short | Long | OverlappingShort | OverlappingLong
 
         PATTERNID
             Luxafor | Police | Random1 | Random2 | Random3 | Random4 | Random5 | RainbowWave
 
     Examples:
 
-        LuxaforCli.exe  red  
+        LuxaforCli.exe  red
 
-        LuxaforCli.exe  front dd4f00  
+        LuxaforCli.exe  front dd4f00
 
         LuxaforCli.exe  red   led1 green   led4 green
-                        ^^^   ^^^^^^^^^^   ^^^^^^^^^^
+                        ---   ----------   ----------
+
         LuxaforCli.exe  back cyan   led1 green   led2 yellow   led3 red   blink led5 blue 20 5
-                        ^^^^^^^^^   ^^^^^^^^^^   ^^^^^^^^^^^   ^^^^^^^^   ^^^^^^^^^^^^^^^^^^^^
+                        ---------   ----------   -----------   --------   --------------------
 
     LED layout:
 
