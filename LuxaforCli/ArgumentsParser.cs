@@ -74,11 +74,6 @@ namespace LuxaforCli
 
         private void checkCurrentDefinition()
         {
-            if (this.currentCommandDefinition.command != CommandType.Pattern && !this.isCurrentColorSet)
-            {
-                throw new Exception(string.Format("No color code supplied for command {0}", this.commands.Count + 1));
-            }
-
             if (this.currentCommandDefinition.command == CommandType.Wave && !this.isCurrentWaveTypeSet) 
             {
                 throw new Exception(string.Format("No wave type supplied for command {0}", this.commands.Count + 1));
@@ -88,7 +83,13 @@ namespace LuxaforCli
             {
                 throw new Exception(string.Format("No pattern type supplied for command {0}", this.commands.Count + 1));
             }
+
+            if (this.currentCommandDefinition.command != CommandType.Pattern && !this.isCurrentColorSet)
+            {
+                throw new Exception(string.Format("No color code supplied for command {0}", this.commands.Count + 1));
+            }
         }
+
 
         #region Token identifiers
 
@@ -147,7 +148,8 @@ namespace LuxaforCli
 
         #endregion
 
-        #region parsers
+
+        #region Token consumers
 
         private bool parseCommand(string arg)
         {

@@ -19,27 +19,29 @@ namespace LuxaforCli
             this.parse();
         }
 
-        private static LuxaforSharp.Color SystemToLuxColor(System.Drawing.Color systemColor)
+        private void parse()
         {
-            return new LuxaforSharp.Color(systemColor.R, systemColor.G, systemColor.B);
+            if (this.parseSystemName()) { return; }
+            if (this.parseCustomName()) { return; }
+            this.parseHexCode();
         }
 
-        private void parse()
+        #region Parsers
+
+        private bool parseSystemName()
         {
             KnownColor knownColor;
 
             if (Enum.TryParse(input, true, out knownColor) && Enum.IsDefined(typeof(KnownColor), knownColor))
             {
                 this.color = SystemToLuxColor(System.Drawing.Color.FromKnownColor(knownColor));
-                return;
+                return true;
             }
 
-            this.parseCustomNames();    
-
-            this.parseHexCode();
+            return false;
         }
 
-        private bool parseCustomNames()
+        private bool parseCustomName()
         {
             switch (input.ToLower())
             {
@@ -72,6 +74,23 @@ namespace LuxaforCli
             }
 
             return false;
+        }
+
+        #endregion
+
+        private static LuxaforSharp.Color SystemToLuxColor(System.Drawing.Color systemColor)
+        {
+            return new LuxaforSharp.Color(systemColor.R, systemColor.G, systemColor.B);
+        }
+
+        public static string ColorToHex(LuxaforSharp.Color color)
+        {
+            return String.Format(
+                "#{0}{1}{2}", 
+                color.Red.ToString("X2"), 
+                color.Green.ToString("X2"), 
+                color.Blue.ToString("X2")
+            );
         }
     }
 }
