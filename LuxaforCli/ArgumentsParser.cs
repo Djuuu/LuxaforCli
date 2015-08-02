@@ -54,6 +54,8 @@ namespace LuxaforCli
 
         private void appendCurrentCommandDefinition()
         {
+            this.checkCurrentDefinition();
+
             // add current CommandDefinition to the list 
             this.commands.Add(this.currentCommandDefinition);
 
@@ -70,6 +72,23 @@ namespace LuxaforCli
             this.isCurrentRepeatSet = false;
         }
 
+        private void checkCurrentDefinition()
+        {
+            if (this.currentCommandDefinition.command != CommandType.Pattern && !this.isCurrentColorSet)
+            {
+                throw new Exception(string.Format("No color code supplied for command {0}", this.commands.Count + 1));
+            }
+
+            if (this.currentCommandDefinition.command == CommandType.Wave && !this.isCurrentWaveTypeSet) 
+            {
+                throw new Exception(string.Format("No wave type supplied for command {0}", this.commands.Count + 1));
+            }
+
+            if (this.currentCommandDefinition.command == CommandType.Pattern && !this.isCurrentPatternTypeSet)
+            {
+                throw new Exception(string.Format("No pattern type supplied for command {0}", this.commands.Count + 1));
+            }
+        }
 
         #region Token identifiers
 
