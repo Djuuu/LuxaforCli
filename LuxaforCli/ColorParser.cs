@@ -33,8 +33,23 @@ namespace LuxaforCli
                 this.color = SystemToLuxColor(System.Drawing.Color.FromKnownColor(knownColor));
                 return;
             }
-            
-            this.parseHexCode();    
+
+            this.parseCustomNames();    
+
+            this.parseHexCode();
+        }
+
+        private bool parseCustomNames()
+        {
+            switch (input.ToLower())
+            {
+                case "off":
+                    this.color = new LuxaforSharp.Color(0, 0, 0);
+                    return true;
+                    break;
+            }
+
+            return false;
         }
 
         private bool parseHexCode()
