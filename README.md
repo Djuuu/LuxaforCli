@@ -70,7 +70,7 @@ You can go to http://luxafor.com/ to get more information about it.
 
 ## Installation
 
-1. Download the latest [prebuilt release](https://github.com/Djuuu/LuxaforCli/releases/latest)
+1. Download the [latest release](https://github.com/Djuuu/LuxaforCli/releases/latest) (LuxaforCli.vx.y.z.zip)
 2. Run `LuxaforCli.exe` according to [usage](https://github.com/Djuuu/LuxaforCli#usage)
 
 ## Development / build requirements
