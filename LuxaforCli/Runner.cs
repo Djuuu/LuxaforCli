@@ -36,7 +36,20 @@ namespace LuxaforCli
         {
             foreach (CommandDefinition command in commands)
             {
+                // We need to wait the task execution in order not to dispose the device too early
                 this.run(command).Wait();
+
+                // When chaining commands too quickly, color changes might not be reliable, depending 
+                // on current led colors, even when waiting for the previous command acknowledgement.
+                //
+                // For instance : 
+                //      LuxaforCli.exe yellow
+                //      LuxaforCli.exe blue wave OverlappingShort red 20
+                //
+                // Increasing timeout in IDevice methods calls doesn't solve the problem, but adding 
+                // a slight delay between commands gives better results. I guess it gives time for 
+                // the device to return its response. Pretty empiric, but does the trick ^^'
+                System.Threading.Thread.Sleep(50);
             }
 
             return true;
